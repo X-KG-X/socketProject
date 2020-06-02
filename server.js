@@ -5,14 +5,14 @@ app.use(express.static(__dirname + "/static"));
 // app.set('view engine', 'ejs');
 // app.set('views', __dirname + '/views');
 
-const session = require('express-session');
-app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  secret: 'keyboardkitteh',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 60000 }
-}))
+// const session = require('express-session');
+// app.set('trust proxy', 1) // trust first proxy
+// app.use(session({
+//   secret: 'keyboardkitteh',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { maxAge: 60000 }
+// }))
 
 // const server = app.listen(8000);
 const server = require('http').createServer(app);
@@ -20,7 +20,7 @@ server.listen(8000);
 const io = require('socket.io')(server);
 
 let users={};
-let players={};
+var players={};
 io.on('connection', function (socket) { //2
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
@@ -31,12 +31,14 @@ io.on('connection', function (socket) { //2
             // console.log("new user**"+data)
             io.emit('new_user', {name:data.name, id:socket.id})
             console.log(users)
+            console.log(socket.id)
+            players[socket.id]={
+                x:100,
+                y:100
+            }
+            console.log(socket.id+"$$$$$$$$")
         }
 
-        players[socket.id]={
-            x:100,
-            y:100
-        }
     })
    socket.on('disconnect', function(){
        console.log("disconnected id:",socket.id)
@@ -50,26 +52,30 @@ io.on('connection', function (socket) { //2
    })
 
    socket.on('movement', function(data) {
-    var player = players[socket.id] || {};
-    if (data.left) {
-      player.x -= 5;
-    }
-    if (data.up) {
-      player.y -= 5;
-    }
-    if (data.right) {
-      player.x += 5;
-    }
-    if (data.down) {
-      player.y += 5;
-    }
+        console.log("In socket.on movement")
+        console.log(players[socket.id]);
+        var player = players[socket.id] || {};
+        console.log(player.x,"------", player.y, users[socket.id]);
+        if (data.left) {
+            player.x -= 5;
+        }
+        if (data.up) {
+            player.y -= 5;
+        }
+        if (data.right) {
+            player.x += 5;
+        }
+        if (data.down) {
+            player.y += 5;
+        }
     });
 
 });
 
 setInterval(function() {
+    // console.log("in state resresh")
     io.sockets.emit('state', players);
-  }, 1000 / 60);
+  }, 1000/60);
 
 
 // Routing
