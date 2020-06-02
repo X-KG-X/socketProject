@@ -61,4 +61,5 @@ socket.on('state', function(players) {
         context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
         context.fill();
     }
+    
 });
