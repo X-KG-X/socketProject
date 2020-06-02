@@ -39,8 +39,6 @@ $(document).ready(function (){
     })
 
     //Canvas
-
-
     var movement = {
         up: false,
         down: false,
@@ -109,6 +107,5 @@ $(document).ready(function (){
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
             context.fill();
         }
-    
     });
  })

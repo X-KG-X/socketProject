@@ -55,18 +55,38 @@ io.on('connection', function (socket) { //2
         console.log("In socket.on movement")
         console.log(players[socket.id]);
         var player = players[socket.id] || {};
-        console.log(player.x,"------", player.y, users[socket.id]);
-        if (data.left) {
-            player.x -= 5;
+        // console.log(player.x,"------", player.y, users[socket.id]);
+        if (data.left ) {
+            if(player.x>0){
+                player.x -= 5;
+            }
+            else{
+                player.x=500;
+            }
         }
         if (data.up) {
-            player.y -= 5;
+            if(player.y>0){
+                player.y -= 5;
+            }
+            else{
+                player.y=400;
+            }
         }
         if (data.right) {
-            player.x += 5;
+            if(player.x<500){
+                player.x += 5;
+            }
+            else{
+                player.x=0;
+            }
         }
-        if (data.down) {
-            player.y += 5;
+        if (data.down ) {
+            if(player.y<400){
+                player.y += 5;
+            }
+            else{
+                player.y=0;
+            }
         }
     });
 
