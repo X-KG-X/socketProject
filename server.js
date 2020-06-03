@@ -8,7 +8,7 @@ server.listen(8000);
 const io = require('socket.io')(server);
 
 let users={};
-var players={};
+let players={};
 io.on('connection', function (socket) { //2
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
@@ -18,11 +18,11 @@ io.on('connection', function (socket) { //2
             console.log(users)
             console.log(socket.id)
             players[socket.id]={
-                x:100,
-                y:100,
+                x:Math.floor(Math.random() * 500) + 1,
+                y:Math.floor(Math.random() * 500) + 1,
                 color:getRandomColor()
             }
-            console.log(socket.id+"$$$$$$$$")
+            console.log(players)
         }
     })
    socket.on('disconnect', function(){
@@ -39,6 +39,7 @@ io.on('connection', function (socket) { //2
         console.log("In socket.on movement")
         console.log(players[socket.id]);
         var player = players[socket.id] || {};
+        console.log(collision(player,socket.id,players));
         if (data.left ) {
             if(player.x>0){
                 player.x -= 5;
@@ -71,6 +72,24 @@ io.on('connection', function (socket) { //2
                 player.y=0;
             }
         }
+        // Collision Detection
+        function collision(player,socketId,players){
+            let playersCopy=Object.assign({},players);
+            delete playersCopy[socketId];
+            if(Object.keys(playersCopy).length>0){
+                for(let one of Object.values(playersCopy)){
+                    if(((player.y + 10) < (one.y)) ||
+                    (player.y > (one.y + 10)) ||
+                    ((player.x + 10) < one.x) ||
+                    (player.x > (one.x + 10))){
+                        return false;
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
+        }
     });
 });
 
@@ -83,9 +102,10 @@ function getRandomColor() {
     return color;
   }
 
+
 setInterval(function() {
     io.sockets.emit('state', players);
-  }, 1000/100);
+  }, 1000/60);
 
 
 // Routing
