@@ -73,7 +73,7 @@ $(document).ready(function (){
     
     setInterval(function() {
         socket.emit('movement', movement);
-        }, 1000/60);
+        }, 2000);
     
     var canvas = document.getElementById('myCanvas');
     canvas.width=500;
@@ -89,6 +89,7 @@ $(document).ready(function (){
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
             context.fill();
             context.stroke();
+            context.strokeText(player.name,player.x,player.y+20)
         }
     });
  })

@@ -17,8 +17,8 @@ io.on('connection', function (socket) { //2
             io.emit('new_user', {name:data.name, id:socket.id})
             console.log(users)
             players[socket.id]={
-                x:Math.floor(Math.random() * 495) + 1,
-                y:Math.floor(Math.random() * 495) + 1,
+                x:Math.floor(Math.random() * 300) + 1,
+                y:Math.floor(Math.random() * 300) + 1,
                 name:data.name,
                 color:getRandomColor()
             }
@@ -35,9 +35,11 @@ io.on('connection', function (socket) { //2
    })
 
    socket.on('movement', function(data) {
+        console.log(data);
         console.log("In socket.on movement")
         console.log(players);
         console.log(players[socket.id]);
+        console.log(socket.id+" ssssssssss")
         var player = players[socket.id] || {};
         if(!collision(player,socket.id,players)){
             if (data.left ) {
@@ -109,16 +111,16 @@ io.on('connection', function (socket) { //2
         }
         // Collision Detection
         function collision(player,socketId,players){
+            console.log(socketId+"  "+socket.id);
             if(Object.keys(players).length>1){
                 for(let [key,value] of Object.entries(players)){
                     if(key!==socketId){
-                        console.log(key+"############"+value.x+"  "+player.x)
                         if(Math.sqrt(Math.pow((player.x-value.x),2)+Math.pow((player.y-value.y),2))<21){ 
+                            console.log(value.name+" 's color is "+ value.color+" "+player.name+" 's color is "+ player.color)
                             value.color=player.color;
                             return true;
                         }
                     }
-                    
                 }
             }
         }
@@ -137,7 +139,7 @@ function getRandomColor() {
 
 setInterval(function() {
     io.sockets.emit('state', players);
-  }, 1000/60);
+  }, 2000);
 
 
 // Routing
