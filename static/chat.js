@@ -73,7 +73,7 @@ $(document).ready(function (){
     
     setInterval(function() {
         socket.emit('movement', movement);
-        }, 1000/10);
+        }, 1000/60);
     
     var canvas = document.getElementById('myCanvas');
     canvas.width=500;

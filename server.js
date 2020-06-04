@@ -17,10 +17,9 @@ io.on('connection', function (socket) { //2
             io.emit('new_user', {name:data.name, id:socket.id})
             console.log(users)
             players[socket.id]={
-                x:Math.floor(Math.random() * 500) + 1,
-                y:Math.floor(Math.random() * 500) + 1,
+                x:Math.floor(Math.random() * 495) + 1,
+                y:Math.floor(Math.random() * 495) + 1,
                 name:data.name,
-                smash:false,
                 color:getRandomColor()
             }
         }
@@ -40,14 +39,13 @@ io.on('connection', function (socket) { //2
         console.log(players);
         console.log(players[socket.id]);
         var player = players[socket.id] || {};
-        player.smash=collision(player,socket.id,players);
-        if(!player.smash){
+        if(!collision(player,socket.id,players)){
             if (data.left ) {
                 if(player.x>0){
                     player.x -= 5;
                 }
                 else{
-                    player.x=500;
+                    player.x=495;
                 }
             }
             if (data.up) {
@@ -55,7 +53,7 @@ io.on('connection', function (socket) { //2
                     player.y -= 5;
                 }
                 else{
-                    player.y=400;
+                    player.y=395;
                 }
             }
             if (data.right) {
@@ -63,7 +61,7 @@ io.on('connection', function (socket) { //2
                     player.x += 5;
                 }
                 else{
-                    player.x=0;
+                    player.x=5;
                 }
             }
             if (data.down ) {
@@ -71,7 +69,7 @@ io.on('connection', function (socket) { //2
                     player.y += 5;
                 }
                 else{
-                    player.y=0;
+                    player.y=5;
                 }
             }
         }
@@ -81,7 +79,7 @@ io.on('connection', function (socket) { //2
                     player.x += 20;
                 }
                 else{
-                    player.x=500;
+                    player.x=495;
                 }
             }
             if (data.up) {
@@ -89,7 +87,7 @@ io.on('connection', function (socket) { //2
                     player.y += 20;
                 }
                 else{
-                    player.y=400;
+                    player.y=395;
                 }
             }
             if (data.right) {
@@ -97,7 +95,7 @@ io.on('connection', function (socket) { //2
                     player.x -= 20;
                 }
                 else{
-                    player.x=0;
+                    player.x=5;
                 }
             }
             if (data.down ) {
@@ -105,29 +103,22 @@ io.on('connection', function (socket) { //2
                     player.y -= 20;
                 }
                 else{
-                    player.y=0;
+                    player.y=5;
                 }
             }
         }
         // Collision Detection
         function collision(player,socketId,players){
-            let playersCopy=Object.assign({},players);
-            // console.log(JSON.stringify(playersCopy)+"%%%%%%%%%%%")
-            // console.log(players)
-            delete playersCopy[socketId];
-            // console.log(JSON.stringify(playersCopy)+"^^^^^^^^^^")
-            if(Object.keys(playersCopy).length>0){
-                for(let one of Object.values(playersCopy)){
-                    if(((player.y + 21) < (one.y)) ||
-                    (player.y > (one.y + 21)) ||
-                    ((player.x + 21) < one.x) ||
-                    (player.x > (one.x + 21))){
-                        return false;
+            if(Object.keys(players).length>1){
+                for(let [key,value] of Object.entries(players)){
+                    if(key!==socketId){
+                        console.log(key+"############"+value.x+"  "+player.x)
+                        if(Math.sqrt(Math.pow((player.x-value.x),2)+Math.pow((player.y-value.y),2))<21){ 
+                            value.color=player.color;
+                            return true;
+                        }
                     }
-                    else{
-                        one.color=player.color;
-                        return true;
-                    }
+                    
                 }
             }
         }
@@ -146,7 +137,7 @@ function getRandomColor() {
 
 setInterval(function() {
     io.sockets.emit('state', players);
-  }, 1000/10);
+  }, 1000/60);
 
 
 // Routing
