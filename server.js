@@ -20,7 +20,12 @@ io.on('connection', function (socket) { //2
                 x:Math.floor(Math.random() * 300) + 1,
                 y:Math.floor(Math.random() * 300) + 1,
                 name:data.name,
+                tagger:false,
                 color:getRandomColor()
+            }
+            if(Object.keys(players).length===1){
+                players[socket.id].tagger=true;
+                console.log(players);
             }
         }
     })
@@ -117,12 +122,37 @@ io.on('connection', function (socket) { //2
                     if(key!==socketId){
                         if(Math.sqrt(Math.pow((player.x-value.x),2)+Math.pow((player.y-value.y),2))<21){ 
                             console.log(value.name+" 's color is "+ value.color+" "+player.name+" 's color is "+ player.color)
-                            value.color=player.color;
+                            if(player.tagger){
+                                value.color=player.color;
+                            }
                             return true;
                         }
                     }
                 }
             }
+        }
+
+        function gameOver(){
+            let result=false;
+            let valueArr=Object.values(players);
+            console.log(valueArr);
+            console.log(valueArr.length)
+            let color=valueArr[0].color;
+            for(let value of valueArr){
+                if(color===value.color &&valueArr.length>1){
+                    result=true;
+                }
+                else{
+                    result=false;
+                    break;
+                }
+            }
+            return result;
+        }
+
+
+        if(gameOver()){
+            setTimeout(function (){clearInterval(gameEngine);}, 1000)
         }
     });
 });
@@ -137,9 +167,10 @@ function getRandomColor() {
   }
 
 
-setInterval(function() {
+var gameEngine= setInterval(function() {
     io.sockets.emit('state', players);
-  }, 2000);
+    }, 1000/60);
+
 
 
 // Routing
