@@ -16,13 +16,13 @@ io.on('connection', function (socket) { //2
             users[socket.id]=data.name
             io.emit('new_user', {name:data.name, id:socket.id})
             console.log(users)
-            console.log(socket.id)
             players[socket.id]={
                 x:Math.floor(Math.random() * 500) + 1,
                 y:Math.floor(Math.random() * 500) + 1,
+                name:data.name,
+                smash:false,
                 color:getRandomColor()
             }
-            console.log(players)
         }
     })
    socket.on('disconnect', function(){
@@ -37,54 +37,95 @@ io.on('connection', function (socket) { //2
 
    socket.on('movement', function(data) {
         console.log("In socket.on movement")
+        console.log(players);
         console.log(players[socket.id]);
         var player = players[socket.id] || {};
-        console.log(collision(player,socket.id,players));
-        if (data.left ) {
-            if(player.x>0){
-                player.x -= 5;
+        player.smash=collision(player,socket.id,players);
+        if(!player.smash){
+            if (data.left ) {
+                if(player.x>0){
+                    player.x -= 5;
+                }
+                else{
+                    player.x=500;
+                }
             }
-            else{
-                player.x=500;
+            if (data.up) {
+                if(player.y>0){
+                    player.y -= 5;
+                }
+                else{
+                    player.y=400;
+                }
+            }
+            if (data.right) {
+                if(player.x<500){
+                    player.x += 5;
+                }
+                else{
+                    player.x=0;
+                }
+            }
+            if (data.down ) {
+                if(player.y<400){
+                    player.y += 5;
+                }
+                else{
+                    player.y=0;
+                }
             }
         }
-        if (data.up) {
-            if(player.y>0){
-                player.y -= 5;
+        else{
+            if (data.left ) {
+                if(player.x>0){
+                    player.x += 20;
+                }
+                else{
+                    player.x=500;
+                }
             }
-            else{
-                player.y=400;
+            if (data.up) {
+                if(player.y>0){
+                    player.y += 20;
+                }
+                else{
+                    player.y=400;
+                }
             }
-        }
-        if (data.right) {
-            if(player.x<500){
-                player.x += 5;
+            if (data.right) {
+                if(player.x<500){
+                    player.x -= 20;
+                }
+                else{
+                    player.x=0;
+                }
             }
-            else{
-                player.x=0;
-            }
-        }
-        if (data.down ) {
-            if(player.y<400){
-                player.y += 5;
-            }
-            else{
-                player.y=0;
+            if (data.down ) {
+                if(player.y<400){
+                    player.y -= 20;
+                }
+                else{
+                    player.y=0;
+                }
             }
         }
         // Collision Detection
         function collision(player,socketId,players){
             let playersCopy=Object.assign({},players);
+            // console.log(JSON.stringify(playersCopy)+"%%%%%%%%%%%")
+            // console.log(players)
             delete playersCopy[socketId];
+            // console.log(JSON.stringify(playersCopy)+"^^^^^^^^^^")
             if(Object.keys(playersCopy).length>0){
                 for(let one of Object.values(playersCopy)){
-                    if(((player.y + 10) < (one.y)) ||
-                    (player.y > (one.y + 10)) ||
-                    ((player.x + 10) < one.x) ||
-                    (player.x > (one.x + 10))){
+                    if(((player.y + 21) < (one.y)) ||
+                    (player.y > (one.y + 21)) ||
+                    ((player.x + 21) < one.x) ||
+                    (player.x > (one.x + 21))){
                         return false;
                     }
                     else{
+                        one.color=player.color;
                         return true;
                     }
                 }
@@ -105,7 +146,7 @@ function getRandomColor() {
 
 setInterval(function() {
     io.sockets.emit('state', players);
-  }, 1000/60);
+  }, 1000/10);
 
 
 // Routing

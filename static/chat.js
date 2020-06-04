@@ -4,32 +4,31 @@ $(document).ready(function (){
     socket.emit('got_new_user',{name:name});
     socket.on('existing_users',function(data){
         for(let i in data ){
-            console.log("this is socket id:",i)
-            $("#sidebar").append('<p id='+i+'>'+data[i]+'</p>')
+            $('#sidebar').append('<p id='+i+'>'+data[i]+'</p>')
         }
     })
     socket.on('new_user',function(data){
-        $("#sidebar").append('<p id='+data.id+'>'+data.name+"</p>")
+        $('#sidebar').append('<p id='+data.id+'>'+data.name+'</p>')
     })
     socket.on('disconnected_user',function(data){
         $('#'+data).remove();
     })
-    $("#message").keypress(function(event){            
+    $('#message').keypress(function(event){            
         if (event.which==13){
-            let new_msg=$("#message").val()
+            let new_msg=$('#message').val()
             socket.emit('new_msg',new_msg)
-            $("#message").val('')
+            $('#message').val('')
             return false
         }   
     })
-    $("#send").click(function(){
-        let new_msg=$("#message").val()
+    $('#send').click(function(){
+        let new_msg=$('#message').val()
         socket.emit('new_msg',new_msg)
-        $("#message").val('')
+        $('#message').val('')
     })
     socket.on('new_message',function(data){
-        $("#chat_box").append("<p>"+data.name+":  "+data.msg+"</p>")
-        $("#chat_box").stop().animate({scrollTop: $("#chat_box")[0].scrollHeight},1000);
+        $('#chat_box').append('<p>'+data.name+':  '+data.msg+'</p>')
+        $('#chat_box').stop().animate({scrollTop: $('#chat_box')[0].scrollHeight},1000);
     })
 
     //Canvas
@@ -74,7 +73,7 @@ $(document).ready(function (){
     
     setInterval(function() {
         socket.emit('movement', movement);
-        }, 1000/60);
+        }, 1000/10);
     
     var canvas = document.getElementById('myCanvas');
     canvas.width=500;
