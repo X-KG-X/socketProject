@@ -9,7 +9,9 @@ const io = require('socket.io')(server);
 
 let users={};
 let players={};
+
 io.on('connection', function (socket) { 
+
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
@@ -27,6 +29,7 @@ io.on('connection', function (socket) {
             }
         }
     })
+
    socket.on('disconnect', function(){
        console.log("disconnected id:",socket.id)
        io.emit('disconnected_user',socket.id)
@@ -44,74 +47,21 @@ io.on('connection', function (socket) {
         console.log(players[socket.id]);
         console.log(socket.id+" ssssssssss")
         var player = players[socket.id] || {};
-        if(!collision(player,socket.id,players)){
-            if (data.left ) {
-                if(player.x>0){
-                    player.x -= 5;
-                }
-                else{
-                    player.x=495;
-                }
-            }
-            if (data.up) {
-                if(player.y>0){
-                    player.y -= 5;
-                }
-                else{
-                    player.y=495;
-                }
-            }
-            if (data.right) {
-                if(player.x<500){
-                    player.x += 5;
-                }
-                else{
-                    player.x=5;
-                }
-            }
-            if (data.down ) {
-                if(player.y<500){
-                    player.y += 5;
-                }
-                else{
-                    player.y=5;
-                }
-            }
+
+        if (!collision(player, socket.id, players)) {
+            if(data.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
+            if(data.up){player.y > 0 ? player.y -= 5 : player.y = 395;}
+            if(data.right){player.x < 500 ? player.x += 5 : player.x = 5;}
+            if(data.down){player.y < 400 ? player.y += 5 : player.y = 5;}
         }
-        else{
-            if (data.left ) {
-                if(player.x>0){
-                    player.x += 50;
-                }
-                else{
-                    player.x=495;
-                }
-            }
-            if (data.up) {
-                if(player.y>0){
-                    player.y += 50;
-                }
-                else{
-                    player.y=495;
-                }
-            }
-            if (data.right) {
-                if(player.x<500){
-                    player.x -= 50;
-                }
-                else{
-                    player.x=5;
-                }
-            }
-            if (data.down ) {
-                if(player.y<500){
-                    player.y -= 50;
-                }
-                else{
-                    player.y=5;
-                }
-            }
+        else {
+            if(data.left){player.x > 0 ? player.x += 20 : player.x = 495;}
+            if(data.right){player.y > 0 ? player.y += 20 : player.y = 395;}
+            if(data.up){player.x < 500 ? player.x -= 20 : player.x = 5;}
+            if(data.down){player.y < 400 ? player.y -= 20 : player.y = 5;}
         }
+
+
         // Collision Detection
         function collision(player,socketId,players){
             console.log(socketId+"  "+socket.id);
