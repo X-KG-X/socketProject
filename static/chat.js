@@ -1,6 +1,6 @@
 $(document).ready(function (){
     const socket = io(); 
-    let name= prompt("Enter your preferred name!");
+    let name= prompt("Enter your preferred name!","Dude");
     socket.emit('got_new_user',{name:name});
     socket.on('existing_users',function(data){
         for(let i in data ){
@@ -70,17 +70,29 @@ $(document).ready(function (){
             break;
         }
     });
+  
     
     setInterval(function() {
         socket.emit('movement', movement);
-        }, 1000/60);
+
+        }, 1000/10);
+
+    // function sleep(ms) {
+    //     return new Promise(resolve => setTimeout(resolve, ms));
+    //     }
+
+    // socket.on('game_over',function(data){
+    //     if(data.isGameOver){
+    //         alert("KG WINS");
+    //     }
+    // })
     
     var canvas = document.getElementById('myCanvas');
     canvas.width=500;
-    canvas.height=400;
+    canvas.height=500;
     var context = canvas.getContext('2d');
     socket.on('state', function(players) {
-        context.clearRect(0, 0, 500, 400);
+        context.clearRect(0, 0, 500, 500);
         for (var id in players) {
             var player = players[id];
             console.log(player+"==========");

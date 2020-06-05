@@ -9,13 +9,12 @@ const io = require('socket.io')(server);
 
 let users={};
 let players={};
-io.on('connection', function (socket) { //2
+io.on('connection', function (socket) { 
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
             users[socket.id]=data.name
             io.emit('new_user', {name:data.name, id:socket.id})
-            console.log(users)
             players[socket.id]={
                 x:Math.floor(Math.random() * 300) + 1,
                 y:Math.floor(Math.random() * 300) + 1,
@@ -60,7 +59,7 @@ io.on('connection', function (socket) { //2
                     player.y -= 5;
                 }
                 else{
-                    player.y=395;
+                    player.y=495;
                 }
             }
             if (data.right) {
@@ -72,7 +71,7 @@ io.on('connection', function (socket) { //2
                 }
             }
             if (data.down ) {
-                if(player.y<400){
+                if(player.y<500){
                     player.y += 5;
                 }
                 else{
@@ -83,7 +82,7 @@ io.on('connection', function (socket) { //2
         else{
             if (data.left ) {
                 if(player.x>0){
-                    player.x += 20;
+                    player.x += 50;
                 }
                 else{
                     player.x=495;
@@ -91,23 +90,23 @@ io.on('connection', function (socket) { //2
             }
             if (data.up) {
                 if(player.y>0){
-                    player.y += 20;
+                    player.y += 50;
                 }
                 else{
-                    player.y=395;
+                    player.y=495;
                 }
             }
             if (data.right) {
                 if(player.x<500){
-                    player.x -= 20;
+                    player.x -= 50;
                 }
                 else{
                     player.x=5;
                 }
             }
             if (data.down ) {
-                if(player.y<400){
-                    player.y -= 20;
+                if(player.y<500){
+                    player.y -= 50;
                 }
                 else{
                     player.y=5;
@@ -135,25 +134,31 @@ io.on('connection', function (socket) { //2
         function gameOver(){
             let result=false;
             let valueArr=Object.values(players);
-            console.log(valueArr);
-            console.log(valueArr.length)
-            let color=valueArr[0].color;
-            for(let value of valueArr){
-                if(color===value.color &&valueArr.length>1){
-                    result=true;
-                }
-                else{
-                    result=false;
-                    break;
+            if(valueArr.length){
+                let color=valueArr[0].color;
+                for(let value of valueArr){
+                    if(color===value.color &&valueArr.length>1){
+                        result=true;
+                    }
+                    else{
+                        result=false;
+                        break;
+                    }
                 }
             }
+            console.log(result+"####################")
             return result;
         }
 
-
         if(gameOver()){
-            setTimeout(function (){clearInterval(gameEngine);}, 1000)
+            socket.emit('game_over',{isGameOver:true})
+            for(let value of Object.values(players)){
+                value.color=getRandomColor();
+                value.x=Math.floor(Math.random() * 300) + 1;
+                value.y=Math.floor(Math.random() * 300) + 1;
+            }
         }
+
     });
 });
 
@@ -168,8 +173,10 @@ function getRandomColor() {
 
 
 var gameEngine= setInterval(function() {
-    io.sockets.emit('state', players);
-    }, 1000/60);
+        io.sockets.emit('state', players);
+        }, 1000/10);
+
+
 
 
 
