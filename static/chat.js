@@ -97,5 +97,9 @@ $(document).ready(function (){
             }
         }
         $("#tagger").text(tagger);
+        socket.on('reset', function(data){
+            $("#resetFlash").text(tagger + " IS THE TAGGER NOW");
+            setTimeout(function(){$("#resetFlash").text('');},3600);
+        })
     });
  })

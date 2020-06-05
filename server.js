@@ -27,99 +27,38 @@ io.on('connection', function (socket) {
             }
         }
     })
+
    socket.on('disconnect', function(){
-       console.log("disconnected id:",socket.id)
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
        delete players[socket.id]
    })
+
    socket.on('new_msg', function(data){
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
    socket.on('movement', function(data) {
-        console.log(data);
-        console.log("In socket.on movement")
-        console.log(players);
-        console.log(players[socket.id]);
-        console.log(socket.id+" ssssssssss")
         var player = players[socket.id] || {};
-        if(!collision(player,socket.id,players)){
-            if (data.left ) {
-                if(player.x>0){
-                    player.x -= 5;
-                }
-                else{
-                    player.x=495;
-                }
+        if (!collision(player, socket.id, players)) {
+            if(data.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
+            if(data.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
+            if(data.right){player.x < 500 ? player.x += 5 : player.x = 5;}
+            if(data.down){player.y < 500 ? player.y += 5 : player.y = 5;}
             }
-            if (data.up) {
-                if(player.y>0){
-                    player.y -= 5;
-                }
-                else{
-                    player.y=495;
-                }
+            else {
+            if(data.left){player.x > 0 ? player.x += 75 : player.x = 495;}
+            if(data.right){player.y > 0 ? player.y += 75 : player.y = 495;}
+            if(data.up){player.x < 500 ? player.x -= 75 : player.x = 5;}
+            if(data.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
             }
-            if (data.right) {
-                if(player.x<500){
-                    player.x += 5;
-                }
-                else{
-                    player.x=5;
-                }
-            }
-            if (data.down ) {
-                if(player.y<500){
-                    player.y += 5;
-                }
-                else{
-                    player.y=5;
-                }
-            }
-        }
-        else{
-            if (data.left ) {
-                if(player.x>0){
-                    player.x += 50;
-                }
-                else{
-                    player.x=495;
-                }
-            }
-            if (data.up) {
-                if(player.y>0){
-                    player.y += 50;
-                }
-                else{
-                    player.y=495;
-                }
-            }
-            if (data.right) {
-                if(player.x<500){
-                    player.x -= 50;
-                }
-                else{
-                    player.x=5;
-                }
-            }
-            if (data.down ) {
-                if(player.y<500){
-                    player.y -= 50;
-                }
-                else{
-                    player.y=5;
-                }
-            }
-        }
+
         // Collision Detection
         function collision(player,socketId,players){
-            console.log(socketId+"  "+socket.id);
             if(Object.keys(players).length>1){
                 for(let [key,value] of Object.entries(players)){
                     if(key!==socketId){
                         if(Math.sqrt(Math.pow((player.x-value.x),2)+Math.pow((player.y-value.y),2))<21){ 
-                            console.log(value.name+" 's color is "+ value.color+" "+player.name+" 's color is "+ player.color)
                             if(player.tagger){
                                 value.color=player.color;
                             }
@@ -163,6 +102,7 @@ io.on('connection', function (socket) {
             }
             let count=Object.keys(players).length;
             Object.values(players)[Math.floor(Math.random()*count)].tagger=true;
+            socket.emit('reset',true);
         }
     });
 });
@@ -176,16 +116,11 @@ function getRandomColor() {
     return color;
   }
 
-
 setInterval(function() {
         io.sockets.emit('state', players);
         }, 1000/60);
 
-
-
-
-
 // Routing
 app.get('/', function(request, response) {
     response.sendFile(path.join(__dirname, 'index.html'));
-  });
+  })
