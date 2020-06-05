@@ -1,5 +1,9 @@
 const express = require('express');
 const app = express();
+
+//TODO Import node fs module to start creating/writing to files.
+let fs = require("fs");
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/static"));
 
@@ -11,6 +15,8 @@ let users={};
 let players={};
 
 io.on('connection', function (socket) { 
+    let createStream = fs.createWriteStream("highScores.txt");
+createStream.end();
 
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
@@ -99,6 +105,10 @@ io.on('connection', function (socket) {
         }
 
         if(gameOver()){
+
+            writeData();
+            fs.readFile('highScores.txt', 'utf8', readData);
+
             socket.emit('game_over',{isGameOver:true})
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
@@ -116,6 +126,31 @@ io.on('connection', function (socket) {
         }
     });
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//TODO This is the file creating/writing for the High scores. Having the file written on connection of the game seems fine.
+
+//on connection
+let createStream = fs.createWriteStream("highScores.txt");
+createStream.end();
+
+// on game over
+function writeData(){
+    let writeStream = fs.createWriteStream("highScores.txt");
+    writeStream.write("HIGH SCORES!");
+    writeStream.write(`User: Rick     Score: 5 seconds`);
+    writeStream.write(`User: Morty     Score: 12 seconds`);
+    writeStream.write(`User: Summer     Score: 20 seconds`);
+    writeStream.end();
+}
+
+// on button click : on game over as well but dispay to bottom of screen
+function readData(err, data) {
+    console.log(data);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
