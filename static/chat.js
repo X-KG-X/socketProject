@@ -74,27 +74,17 @@ $(document).ready(function (){
     
     setInterval(function() {
         socket.emit('movement', movement);
-
-        }, 1000/10);
-
-    // function sleep(ms) {
-    //     return new Promise(resolve => setTimeout(resolve, ms));
-    //     }
-
-    // socket.on('game_over',function(data){
-    //     if(data.isGameOver){
-    //         alert("KG WINS");
-    //     }
-    // })
+        }, 1000/60);
     
     var canvas = document.getElementById('myCanvas');
     canvas.width=500;
     canvas.height=500;
     var context = canvas.getContext('2d');
-    socket.on('state', function(players) {
+    socket.on('state', function(data) {
+        let tagger;
         context.clearRect(0, 0, 500, 500);
-        for (var id in players) {
-            var player = players[id];
+        for (var id in data) {
+            var player = data[id];
             console.log(player+"==========");
             context.fillStyle =player.color ;
             context.beginPath();
@@ -102,6 +92,10 @@ $(document).ready(function (){
             context.fill();
             context.stroke();
             context.strokeText(player.name,player.x,player.y+20)
+            if(player.tagger){
+                tagger=player.name;
+            }
         }
+        $("#tagger").text(tagger);
     });
  })

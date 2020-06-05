@@ -24,7 +24,6 @@ io.on('connection', function (socket) {
             }
             if(Object.keys(players).length===1){
                 players[socket.id].tagger=true;
-                console.log(players);
             }
         }
     })
@@ -146,7 +145,6 @@ io.on('connection', function (socket) {
                     }
                 }
             }
-            console.log(result+"####################")
             return result;
         }
 
@@ -157,8 +155,15 @@ io.on('connection', function (socket) {
                 value.x=Math.floor(Math.random() * 300) + 1;
                 value.y=Math.floor(Math.random() * 300) + 1;
             }
+            pickTagger();
         }
-
+        function pickTagger(){
+            for(let value of Object.values(players)){
+                value.tagger=false;
+            }
+            let count=Object.keys(players).length;
+            Object.values(players)[Math.floor(Math.random()*count)].tagger=true;
+        }
     });
 });
 
@@ -172,9 +177,9 @@ function getRandomColor() {
   }
 
 
-var gameEngine= setInterval(function() {
+setInterval(function() {
         io.sockets.emit('state', players);
-        }, 1000/10);
+        }, 1000/60);
 
 
 
