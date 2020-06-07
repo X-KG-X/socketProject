@@ -40,6 +40,9 @@ io.on('connection', function (socket) {
 
    socket.on('movement', function(data) {
         var player = players[socket.id] || {};
+        // if(player.tagger&&(player.x||player.y)){
+        //     socket.emit('startTimer',true);
+        // }
         if (!collision(player, socket.id, players)) {
             if(data.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
             if(data.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
@@ -48,8 +51,8 @@ io.on('connection', function (socket) {
             }
             else {
             if(data.left){player.x > 0 ? player.x += 75 : player.x = 495;}
-            if(data.right){player.y > 0 ? player.y += 75 : player.y = 495;}
-            if(data.up){player.x < 500 ? player.x -= 75 : player.x = 5;}
+            if(data.up){player.y > 0 ? player.y += 75 : player.y = 495;}
+            if(data.right){player.x < 500 ? player.x -= 75 : player.x = 5;}
             if(data.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
             }
 
@@ -88,7 +91,6 @@ io.on('connection', function (socket) {
         }
 
         if(gameOver()){
-            socket.emit('game_over',{isGameOver:true})
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
                 value.x=Math.floor(Math.random() * 300) + 1;
@@ -101,8 +103,9 @@ io.on('connection', function (socket) {
                 value.tagger=false;
             }
             let count=Object.keys(players).length;
-            Object.values(players)[Math.floor(Math.random()*count)].tagger=true;
-            socket.emit('reset',true);
+            let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
+            newTagger.tagger=true;
+            socket.emit('reset',newTagger);
         }
     });
 });
@@ -119,6 +122,8 @@ function getRandomColor() {
 setInterval(function() {
         io.sockets.emit('state', players);
         }, 1000/60);
+
+
 
 // Routing
 app.get('/', function(request, response) {
