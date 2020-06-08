@@ -122,12 +122,18 @@ $(document).ready(function (){
     var numPlayers;
     function stopTimer(){
         let score=seconds;
-        // console.log(tagger);
-        // console.log(score);
-        // console.log(numPlayers+"--------");
         seconds=0;
         $('#timer').text(seconds);
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
+
+    socket.on('display',function(data){
+        if(data){
+            $('#display').text('');
+            data.forEach(element => {
+                $('#display').append(`<ul>${element._id} players tagged in ${element.minTime} seconds</ul>`);
+            });
+        }
+    })
 
  })
