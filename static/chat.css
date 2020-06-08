@@ -9,3 +9,50 @@
     100%{   color: red;    }
 }
 
+*{
+    background-color: beige;
+}
+
+h4{
+    display: flex;
+    justify-content: center;
+}
+
+.timer{
+    text-decoration: none;
+}
+
+#chat_box{
+    background-color: lightblue;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#sidebar{
+    background-color: lightcoral;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+canvas{
+    background-color: lightgray;
+    border-radius: 25px;
+}
+
+#send{
+    border-radius: 25px;
+    color: lightcoral;
+    background-color: lightblue;
+}
+
+#message{
+    border-radius: 25px;
+}
+
+.taggerClass{
+    text-decoration: underline;
+}
+
+p{
+    background-color: transparent;
+}

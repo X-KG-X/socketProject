@@ -174,7 +174,7 @@ createStream.end();
 function writeData(){
     let writeStream = fs.createWriteStream("highScores.txt");
     writeStream.write("HIGH SCORES!");
-    writeStream.write(`User: Rick     Score: 5 seconds`);
+    writeStream.write(`User: ${name}     Score: ${score}`);
     writeStream.write(`User: Morty     Score: 12 seconds`);
     writeStream.write(`User: Summer     Score: 20 seconds`);
     writeStream.end();
