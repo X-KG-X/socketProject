@@ -7,6 +7,18 @@ const server = require('http').createServer(app);
 server.listen(8000);
 const io = require('socket.io')(server);
 
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/tag',{useNewUrlParser:true,useUnifiedTopology: true});
+const ScoreSchema = new mongoose.Schema({
+    name: String,
+    tags: Number,
+    time: Number
+    },
+    {timestamps:true}
+)
+const Score = mongoose.model('Score', ScoreSchema);
+
+
 let users={};
 let players={};
 var timerTrigger=false;
@@ -104,12 +116,12 @@ io.on('connection', function (socket) {
         }
 
         if(gameOver()){
-            stopTimer();
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
                 value.x=Math.floor(Math.random() * 300) + 1;
                 value.y=Math.floor(Math.random() * 300) + 1;
             }
+            stopTimer();
             pickTagger();
         }
         function pickTagger(){
@@ -122,7 +134,19 @@ io.on('connection', function (socket) {
             socket.emit('reset',newTagger);
         }
     });
+
+    socket.on('score',function(data){
+        const score=new Score();
+    
+        score.name=data.name;
+        score.tags=data.tags;
+        score.time=data.time;
+        score.save()
+        .then(newScore=>console.log('score created: ', newScore))
+        .catch(err=>console.log(err));
+    })
 });
+
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';

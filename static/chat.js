@@ -80,8 +80,9 @@ $(document).ready(function (){
     canvas.width=500;
     canvas.height=500;
     var context = canvas.getContext('2d');
+    var tagger;
     socket.on('state', function(data) {
-        let tagger;
+        numPlayers=Object.keys(data).length;
         context.clearRect(0, 0, 500, 500);
         for (var id in data) {
             var player = data[id];
@@ -118,9 +119,15 @@ $(document).ready(function (){
         seconds++;
         $('#timer').text(seconds);
     }
+    var numPlayers;
     function stopTimer(){
+        let score=seconds;
+        // console.log(tagger);
+        // console.log(score);
+        // console.log(numPlayers+"--------");
         seconds=0;
         $('#timer').text(seconds);
+        socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
  })
