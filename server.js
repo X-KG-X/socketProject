@@ -27,13 +27,10 @@ let users={};
 let players={};
 var timerTrigger=false;
 io.on('connection', function (socket) { 
-<<<<<<< HEAD
     let createStream = fs.createWriteStream("highScores.txt");
 createStream.end();
 
-=======
     displayScore();
->>>>>>> ddff71a1a260061ad4ff42cbb0abd37facb24b89
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
@@ -172,7 +169,6 @@ createStream.end();
 });
 
 
-<<<<<<< HEAD
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //TODO This is the file creating/writing for the High scores. Having the file written on connection of the game seems fine.
 
@@ -197,8 +193,6 @@ function readData(err, data) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-=======
->>>>>>> 1c0d3670ed9d0bac8be1c12f45220e379b736320
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';

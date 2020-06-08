@@ -51,20 +51,6 @@ $(document).ready(function () {
     // When key is held down then user character should move in that direction
     document.addEventListener('keydown', function (event) {
         switch (event.keyCode) {
-<<<<<<< HEAD
-            case 65: // A
-                movement.left = true;
-                break;
-            case 87: // W
-                movement.up = true;
-                break;
-            case 68: // D
-                movement.right = true;
-                break;
-            case 83: // S
-                movement.down = true;
-                break;
-=======
             case 37: // LEFT
             movement.left = true;
             break;
@@ -77,27 +63,12 @@ $(document).ready(function () {
             case 40: // DOWN
             movement.down = true;
             break;
->>>>>>> ddff71a1a260061ad4ff42cbb0abd37facb24b89
         }
     });
 
     // When the key is released then the user should stop moving in that direction
     document.addEventListener('keyup', function (event) {
         switch (event.keyCode) {
-<<<<<<< HEAD
-            case 65: // A
-                movement.left = false;
-                break;
-            case 87: // W
-                movement.up = false;
-                break;
-            case 68: // D
-                movement.right = false;
-                break;
-            case 83: // S
-                movement.down = false;
-                break;
-=======
             case 37: // LEFT
             movement.left = false;
             break;
@@ -110,7 +81,6 @@ $(document).ready(function () {
             case 40: // DOWN
             movement.down = false;
             break;
->>>>>>> ddff71a1a260061ad4ff42cbb0abd37facb24b89
         }
     });
 
@@ -175,9 +145,6 @@ $(document).ready(function () {
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
-<<<<<<< HEAD
-})
-=======
     socket.on('display',function(data){
         if(data){
             $('#display').text('');
@@ -188,4 +155,3 @@ $(document).ready(function () {
     })
 
  })
->>>>>>> ddff71a1a260061ad4ff42cbb0abd37facb24b89
