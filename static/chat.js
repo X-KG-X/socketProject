@@ -40,32 +40,32 @@ $(document).ready(function (){
     }
     document.addEventListener('keydown', function(event) {
         switch (event.keyCode) {
-            case 65: // A
+            case 37: // LEFT
             movement.left = true;
             break;
-            case 87: // W
+            case 38: // UP
             movement.up = true;
             break;
-            case 68: // D
+            case 39: // RIGHT
             movement.right = true;
             break;
-            case 83: // S
+            case 40: // DOWN
             movement.down = true;
             break;
         }
     });
     document.addEventListener('keyup', function(event) {
         switch (event.keyCode) {
-            case 65: // A
+            case 37: // LEFT
             movement.left = false;
             break;
-            case 87: // W
+            case 38: // UP
             movement.up = false;
             break;
-            case 68: // D            
+            case 39: // RIGHT
             movement.right = false;
             break;
-            case 83: // S
+            case 40: // DOWN
             movement.down = false;
             break;
         }
