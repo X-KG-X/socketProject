@@ -86,3 +86,30 @@
 <input type="submit" class="float-right btn btn-success mt-1" value="start" id="start">
 </form>
 <input type="button" class="float-right btn btn-primary mt-1" value="reset" id="resetGame"> -->
+
+
+
+
+
+    // var stopwatch;
+    // function startTimer(){
+    //     let x=Date.now()
+    //     let result=0;
+    //     stopwatch=setInterval(function(){
+    //         result=Date.now()-x;
+    //         $('#timer').text(result);
+    //     })
+    // }
+
+    // function stopTimer(){
+    //     var taggerScore=$('#stopwatch').text()
+    //     clearInterval(stopwatch);
+    //     $('#timer').text(0)
+    //     return taggerScore;
+    // }
+
+    // socket.on('startTimer', function(data){
+    //     if(data){
+    //         startTimer();
+    //     }
+    // })

@@ -9,6 +9,7 @@ const io = require('socket.io')(server);
 
 let users={};
 let players={};
+var timerTrigger=false;
 io.on('connection', function (socket) { 
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
@@ -28,6 +29,15 @@ io.on('connection', function (socket) {
         }
     })
 
+    function startTimer(){
+        socket.emit('startTime',true)
+        timerTrigger=true;
+    }
+    function stopTimer(){
+        socket.emit('startTime', false)
+        timerTrigger=false;
+    }
+
    socket.on('disconnect', function(){
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
@@ -38,22 +48,25 @@ io.on('connection', function (socket) {
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
+   
    socket.on('movement', function(data) {
+        if(!timerTrigger){
+            if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
+                startTimer();
+            }
+        }
         var player = players[socket.id] || {};
-        // if(player.tagger&&(player.x||player.y)){
-        //     socket.emit('startTimer',true);
-        // }
         if (!collision(player, socket.id, players)) {
-            if(data.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
-            if(data.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
-            if(data.right){player.x < 500 ? player.x += 5 : player.x = 5;}
-            if(data.down){player.y < 500 ? player.y += 5 : player.y = 5;}
+            if(data.movement.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
+            if(data.movement.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
+            if(data.movement.right){player.x < 500 ? player.x += 5 : player.x = 5;}
+            if(data.movement.down){player.y < 500 ? player.y += 5 : player.y = 5;}
             }
             else {
-            if(data.left){player.x > 0 ? player.x += 75 : player.x = 495;}
-            if(data.up){player.y > 0 ? player.y += 75 : player.y = 495;}
-            if(data.right){player.x < 500 ? player.x -= 75 : player.x = 5;}
-            if(data.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
+            if(data.movement.left){player.x > 0 ? player.x += 75 : player.x = 495;}
+            if(data.movement.up){player.y > 0 ? player.y += 75 : player.y = 495;}
+            if(data.movement.right){player.x < 500 ? player.x -= 75 : player.x = 5;}
+            if(data.movement.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
             }
 
         // Collision Detection
@@ -91,6 +104,7 @@ io.on('connection', function (socket) {
         }
 
         if(gameOver()){
+            stopTimer();
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
                 value.x=Math.floor(Math.random() * 300) + 1;
@@ -122,8 +136,6 @@ function getRandomColor() {
 setInterval(function() {
         io.sockets.emit('state', players);
         }, 1000/60);
-
-
 
 // Routing
 app.get('/', function(request, response) {
