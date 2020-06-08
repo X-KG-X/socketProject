@@ -23,14 +23,17 @@ const ScoreSchema = new mongoose.Schema({
 )
 const Score = mongoose.model('Score', ScoreSchema);
 
-
 let users={};
 let players={};
 var timerTrigger=false;
 io.on('connection', function (socket) { 
+<<<<<<< HEAD
     let createStream = fs.createWriteStream("highScores.txt");
 createStream.end();
 
+=======
+    displayScore();
+>>>>>>> ddff71a1a260061ad4ff42cbb0abd37facb24b89
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
@@ -49,6 +52,11 @@ createStream.end();
         }
     })
 
+    function displayScore(){
+        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}}])
+            .then(data=>{socket.emit('display',data)})
+            .catch(err=>console.log(err))
+    }
     function startTimer(){
         socket.emit('startTime',true)
         timerTrigger=true;
@@ -68,7 +76,6 @@ createStream.end();
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
-   
    socket.on('movement', function(data) {
         if(!timerTrigger){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
@@ -139,6 +146,7 @@ createStream.end();
             }
             stopTimer();
             pickTagger();
+            displayScore();
         }
         function pickTagger(){
             for(let value of Object.values(players)){
@@ -153,14 +161,14 @@ createStream.end();
 
     socket.on('score',function(data){
         const score=new Score();
-    
         score.name=data.name;
         score.tags=data.tags;
         score.time=data.time;
         score.save()
-        .then(newScore=>console.log('score created: ', newScore))
-        .catch(err=>console.log(err));
+            .then(newScore=>console.log('score created: ', newScore))
+            .catch(err=>console.log(err));
     })
+
 });
 
 
