@@ -1,7 +1,8 @@
+//Needed to set up the server
 const express = require('express');
 const app = express();
 
-//TODO Import node fs module to start creating/writing to files.
+// node fs module to start creating/writing to files.
 let fs = require("fs");
 
 app.use(express.urlencoded({extended: true}));
@@ -163,6 +164,7 @@ createStream.end();
 });
 
 
+<<<<<<< HEAD
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //TODO This is the file creating/writing for the High scores. Having the file written on connection of the game seems fine.
 
@@ -174,7 +176,7 @@ createStream.end();
 function writeData(){
     let writeStream = fs.createWriteStream("highScores.txt");
     writeStream.write("HIGH SCORES!");
-    writeStream.write(`User: ${name}     Score: ${score}`);
+    writeStream.write(`User: Rick     Score: 5 seconds`);
     writeStream.write(`User: Morty     Score: 12 seconds`);
     writeStream.write(`User: Summer     Score: 20 seconds`);
     writeStream.end();
@@ -187,6 +189,8 @@ function readData(err, data) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+=======
+>>>>>>> 1c0d3670ed9d0bac8be1c12f45220e379b736320
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';

@@ -56,3 +56,7 @@ canvas{
 p{
     background-color: transparent;
 }
+
+.centerAll{
+    justify-content: center;
+}
