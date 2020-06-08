@@ -137,11 +137,15 @@ $(document).ready(function () {
         seconds++;
         $('#timer').text(seconds);
     }
-
-
-    function stopTimer() {
-        seconds = 0;
+    var numPlayers;
+    function stopTimer(){
+        let score=seconds;
+        // console.log(tagger);
+        // console.log(score);
+        // console.log(numPlayers+"--------");
+        seconds=0;
         $('#timer').text(seconds);
+        socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
 })
