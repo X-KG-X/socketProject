@@ -97,5 +97,33 @@ $(document).ready(function (){
             }
         }
         $("#tagger").text(tagger);
+        socket.on('reset', function(data){
+            $("#resetFlash").text(data.name + " IS THE TAGGER NOW");
+            setTimeout(function(){$("#resetFlash").text('');},3600);
+            // startTimer();
+        })
     });
+
+    // var stopwatch;
+    // function startTimer(){
+    //     let x=Date.now()
+    //     let result=0;
+    //     stopwatch=setInterval(function(){
+    //         result=Date.now()-x;
+    //         $('#timer').text(result);
+    //     })
+    // }
+
+    // function stopTimer(){
+    //     var taggerScore=$('#stopwatch').text()
+    //     clearInterval(stopwatch);
+    //     $('#timer').text(0)
+    //     return taggerScore;
+    // }
+
+    // socket.on('startTimer', function(data){
+    //     if(data){
+    //         startTimer();
+    //     }
+    // })
  })

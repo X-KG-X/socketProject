@@ -1,0 +1,88 @@
+        // if(!collision(player,socket.id,players)){
+        //     if (data.left ) {
+        //         if(player.x>0){
+        //             player.x -= 5;
+        //         }
+        //         else{
+        //             player.x=495;
+        //         }
+        //     }
+        //     if (data.up) {
+        //         if(player.y>0){
+        //             player.y -= 5;
+        //         }
+        //         else{
+        //             player.y=495;
+        //         }
+        //     }
+        //     if (data.right) {
+        //         if(player.x<500){
+        //             player.x += 5;
+        //         }
+        //         else{
+        //             player.x=5;
+        //         }
+        //     }
+        //     if (data.down ) {
+        //         if(player.y<500){
+        //             player.y += 5;
+        //         }
+        //         else{
+        //             player.y=5;
+        //         }
+        //     }
+        // }
+        // else{
+        //     if (data.left ) {
+        //         if(player.x>0){
+        //             player.x += 50;
+        //         }
+        //         else{
+        //             player.x=495;
+        //         }
+        //     }
+        //     if (data.up) {
+        //         if(player.y>0){
+        //             player.y += 50;
+        //         }
+        //         else{
+        //             player.y=495;
+        //         }
+        //     }
+        //     if (data.right) {
+        //         if(player.x<500){
+        //             player.x -= 50;
+        //         }
+        //         else{
+        //             player.x=5;
+        //         }
+        //     }
+        //     if (data.down ) {
+        //         if(player.y<500){
+        //             player.y -= 50;
+        //         }
+        //         else{
+        //             player.y=5;
+        //         }
+        //     }
+        // }
+
+
+
+
+
+
+<!-- <form>
+<div class="form-group">
+<label for="exampleFormControlSelect1">Select Tagger</label>
+<select class="form-control" id="exampleFormControlSelect1">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+</select>
+</div>
+<input type="submit" class="float-right btn btn-success mt-1" value="start" id="start">
+</form>
+<input type="button" class="float-right btn btn-primary mt-1" value="reset" id="resetGame"> -->

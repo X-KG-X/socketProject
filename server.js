@@ -37,45 +37,39 @@ createStream.end();
     })
 
    socket.on('disconnect', function(){
-       console.log("disconnected id:",socket.id)
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
        delete players[socket.id]
    })
+
    socket.on('new_msg', function(data){
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
    socket.on('movement', function(data) {
-        console.log(data);
-        console.log("In socket.on movement")
-        console.log(players);
-        console.log(players[socket.id]);
-        console.log(socket.id+" ssssssssss")
         var player = players[socket.id] || {};
-
+        // if(player.tagger&&(player.x||player.y)){
+        //     socket.emit('startTimer',true);
+        // }
         if (!collision(player, socket.id, players)) {
             if(data.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
-            if(data.up){player.y > 0 ? player.y -= 5 : player.y = 395;}
+            if(data.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
             if(data.right){player.x < 500 ? player.x += 5 : player.x = 5;}
-            if(data.down){player.y < 400 ? player.y += 5 : player.y = 5;}
-        }
-        else {
-            if(data.left){player.x > 0 ? player.x += 20 : player.x = 495;}
-            if(data.right){player.y > 0 ? player.y += 20 : player.y = 395;}
-            if(data.up){player.x < 500 ? player.x -= 20 : player.x = 5;}
-            if(data.down){player.y < 400 ? player.y -= 20 : player.y = 5;}
-        }
-
+            if(data.down){player.y < 500 ? player.y += 5 : player.y = 5;}
+            }
+            else {
+            if(data.left){player.x > 0 ? player.x += 75 : player.x = 495;}
+            if(data.up){player.y > 0 ? player.y += 75 : player.y = 495;}
+            if(data.right){player.x < 500 ? player.x -= 75 : player.x = 5;}
+            if(data.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
+            }
 
         // Collision Detection
         function collision(player,socketId,players){
-            console.log(socketId+"  "+socket.id);
             if(Object.keys(players).length>1){
                 for(let [key,value] of Object.entries(players)){
                     if(key!==socketId){
                         if(Math.sqrt(Math.pow((player.x-value.x),2)+Math.pow((player.y-value.y),2))<21){ 
-                            console.log(value.name+" 's color is "+ value.color+" "+player.name+" 's color is "+ player.color)
                             if(player.tagger){
                                 value.color=player.color;
                             }
@@ -106,10 +100,12 @@ createStream.end();
 
         if(gameOver()){
 
+
             writeData();
             fs.readFile('highScores.txt', 'utf8', readData);
 
             socket.emit('game_over',{isGameOver:true})
+
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
                 value.x=Math.floor(Math.random() * 300) + 1;
@@ -122,7 +118,9 @@ createStream.end();
                 value.tagger=false;
             }
             let count=Object.keys(players).length;
-            Object.values(players)[Math.floor(Math.random()*count)].tagger=true;
+            let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
+            newTagger.tagger=true;
+            socket.emit('reset',newTagger);
         }
     });
 });
@@ -161,16 +159,13 @@ function getRandomColor() {
     return color;
   }
 
-
 setInterval(function() {
         io.sockets.emit('state', players);
         }, 1000/60);
 
 
 
-
-
 // Routing
 app.get('/', function(request, response) {
     response.sendFile(path.join(__dirname, 'index.html'));
-  });
+  })
