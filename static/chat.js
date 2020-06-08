@@ -73,7 +73,7 @@ $(document).ready(function (){
   
     
     setInterval(function() {
-        socket.emit('movement', movement);
+        socket.emit('movement', {movement:movement, socketId:socket.id});
         }, 1000/60);
     
     var canvas = document.getElementById('myCanvas');
@@ -85,7 +85,6 @@ $(document).ready(function (){
         context.clearRect(0, 0, 500, 500);
         for (var id in data) {
             var player = data[id];
-            console.log(player+"==========");
             context.fillStyle =player.color ;
             context.beginPath();
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
@@ -100,30 +99,28 @@ $(document).ready(function (){
         socket.on('reset', function(data){
             $("#resetFlash").text(data.name + " IS THE TAGGER NOW");
             setTimeout(function(){$("#resetFlash").text('');},3600);
-            // startTimer();
         })
     });
+    
+    var seconds=0;
+    var interval;
+    socket.on('startTime',function(data){
+        if(data){
+            clearInterval(interval);
+            interval=setInterval(startTimer,100);
+        }
+        else{
+            clearInterval(interval);
+            stopTimer();
+        }
+    })
+    function startTimer(){
+        seconds++;
+        $('#timer').text(seconds);
+    }
+    function stopTimer(){
+        seconds=0;
+        $('#timer').text(seconds);
+    }
 
-    // var stopwatch;
-    // function startTimer(){
-    //     let x=Date.now()
-    //     let result=0;
-    //     stopwatch=setInterval(function(){
-    //         result=Date.now()-x;
-    //         $('#timer').text(result);
-    //     })
-    // }
-
-    // function stopTimer(){
-    //     var taggerScore=$('#stopwatch').text()
-    //     clearInterval(stopwatch);
-    //     $('#timer').text(0)
-    //     return taggerScore;
-    // }
-
-    // socket.on('startTimer', function(data){
-    //     if(data){
-    //         startTimer();
-    //     }
-    // })
  })
