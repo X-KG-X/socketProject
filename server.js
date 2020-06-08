@@ -62,7 +62,7 @@ createStream.end();
                 startTimer();
             }
         }
-        var player = players[socket.id] || {};
+        let player = players[socket.id] || {};
         if (!collision(player, socket.id, players)) {
             if(data.movement.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
             if(data.movement.up){player.y > 0 ? player.y -= 5 : player.y = 495;}

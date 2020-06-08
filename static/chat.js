@@ -13,13 +13,13 @@ $(document).ready(function (){
     socket.on('disconnected_user',function(data){
         $('#'+data).remove();
     })
-    $('#message').keypress(function(event){            
+    $('#message').keypress(function(event){
         if (event.which==13){
             let new_msg=$('#message').val()
             socket.emit('new_msg',new_msg)
             $('#message').val('')
             return false
-        }   
+        }
     })
     $('#send').click(function(){
         let new_msg=$('#message').val()
@@ -32,7 +32,7 @@ $(document).ready(function (){
     })
 
     //Canvas
-    var movement = {
+    let movement = {
         up: false,
         down: false,
         left: false,
@@ -76,15 +76,15 @@ $(document).ready(function (){
         socket.emit('movement', {movement:movement, socketId:socket.id});
         }, 1000/60);
     
-    var canvas = document.getElementById('myCanvas');
+    let canvas = document.getElementById('myCanvas');
     canvas.width=500;
     canvas.height=500;
-    var context = canvas.getContext('2d');
+    let context = canvas.getContext('2d');
     socket.on('state', function(data) {
         let tagger;
         context.clearRect(0, 0, 500, 500);
-        for (var id in data) {
-            var player = data[id];
+        for (let id in data) {
+            let player = data[id];
             context.fillStyle =player.color ;
             context.beginPath();
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
@@ -102,8 +102,8 @@ $(document).ready(function (){
         })
     });
     
-    var seconds=0;
-    var interval;
+    let seconds=0;
+    let interval;
     socket.on('startTime',function(data){
         if(data){
             clearInterval(interval);
