@@ -126,6 +126,13 @@ $(document).ready(function (){
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
+    socket.on('audio',function(data){
+        if(data){
+            let x=document.getElementById("myAudio");
+            x.play();
+        }
+    })
+
     socket.on('display',function(data){
         if(data){
             $('#display').text('');
