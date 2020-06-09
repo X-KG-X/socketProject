@@ -13,9 +13,16 @@
     background-color: beige;
 }
 
+body{
+    background-color: transparent;
+}
+
 h4{
-    display: flex;
-    justify-content: center;
+    text-align: center;
+}
+
+#timeToBeat{
+    text-align: left;
 }
 
 .timer{
