@@ -71,7 +71,6 @@ $(document).ready(function (){
         }
     });
   
-    
     setInterval(function() {
         socket.emit('movement', {movement:movement, socketId:socket.id});
         }, 1000/60);
