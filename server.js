@@ -59,6 +59,7 @@ io.on('connection', function (socket) {
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
        delete players[socket.id]
+       pickTagger()
    })
 
    socket.on('new_msg', function(data){
@@ -66,7 +67,7 @@ io.on('connection', function (socket) {
    })
 
    socket.on('movement', function(data) {
-        if(!timerTrigger){
+        if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
                 startTimer();
             }
@@ -129,27 +130,27 @@ io.on('connection', function (socket) {
             pickTagger();
             displayScore();
         }
-        function pickTagger(){
-            for(let value of Object.values(players)){
-                value.tagger=false;
-            }
-            let count=Object.keys(players).length;
-            let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
-            newTagger.tagger=true;
-            socket.emit('reset',newTagger);
-        }
     });
-
+    
     socket.on('score',function(data){
         const score=new Score();
         score.name=data.name;
         score.tags=data.tags;
         score.time=data.time;
         score.save()
-            .then(newScore=>console.log('score created: ', newScore))
-            .catch(err=>console.log(err));
+        .then(newScore=>console.log('score created: ', newScore))
+        .catch(err=>console.log(err));
     })
-
+    
+    function pickTagger(){
+        for(let value of Object.values(players)){
+            value.tagger=false;
+        }
+        let count=Object.keys(players).length;
+        let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
+        newTagger.tagger=true;
+        socket.emit('reset',newTagger);
+    }
 });
 
 
