@@ -22,27 +22,23 @@
 </head>
 
 <body class="container">
-    <div id="centerAll">
-        <div class="row">
-            <div class="col mt-5">
-                <h4>ChatBox</h4>
-                <div class="row text-center" style="height:300px">
-                    <div class="col-2 border pre-scrollable" id="sidebar">
-                    </div>
-                    <div id="chat_box" class="text-left col-10 pre-scrollable  border"></div>
-                </div>
-                <textarea name="msg" id="message" class="form-control mt-5"
-                    placeholder="Enter your message here!"></textarea>
-                <input type="submit" id="send" class="float-right btn btn-success mt-1" value="Send Message">
+    <div class="row">
+        <div class="col mt-5">
+            <h4>ChatBox</h4>
+            <div class="row text-center" style="height:300px">
+                <div class="col-2  pre-scrollable" id="sidebar">  
+                </div> 
+                <div id="chat_box" class="text-left col-10 pre-scrollable "></div>  
             </div>
-            <div class="col mt-5">
-                <h4>Multiplayer Game of TAG TIMER:<span class="pl-5 text-right" id="timer">0</span></h4>
-                <canvas id="myCanvas" class="col p-3 h-100">
-                </canvas>
-                <p class="taggerClass">Tagger: <span id="tagger" class="text-danger ont-weight-bold pr-5"></span></p>
-                <h1 id="resetFlash" class="blinking"></h1>
-
-            </div>
+            <textarea  name="msg" id="message" class="form-control mt-5" placeholder="Enter your message here!"></textarea>
+            <input type="submit" id="send" class="float-right btn btn-success mt-1" value="Send Message">
+        </div>
+        <div class="col mt-5">
+            <h4>Multiplayer Game of TAG &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TIMER:<span class="pl-5" id="timer">0</span></h4>
+            <canvas id="myCanvas" class="col p-3 h-100" style="background-color:cadetblue">
+            </canvas>
+            <p class="taggerClass my-2">Tagger: <span id="tagger" class="text-danger ont-weight-bold pr-5"></span></p>
+            <h1 id="resetFlash" class="blinking"></h1>
         </div>
     </div>
     <div >
