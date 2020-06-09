@@ -92,8 +92,9 @@ createStream.end();
             if(data.movement.up){player.y > 0 ? player.y += 75 : player.y = 495;}
             if(data.movement.right){player.x < 500 ? player.x -= 75 : player.x = 5;}
             if(data.movement.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
+            socket.emit('audio',true)
             }
-
+ 
         // Collision Detection
         function collision(player,socketId,players){
             if(Object.keys(players).length>1){

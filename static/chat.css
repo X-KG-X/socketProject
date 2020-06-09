@@ -1,3 +1,7 @@
+*{
+    background-color: rgb(195, 194, 201);
+}
+
 .blinking{
     animation:blinkingText 1.2s infinite;
 }
@@ -66,4 +70,8 @@ p{
 
 .centerAll{
     justify-content: center;
+}
+
+#timer{
+    width:75px;
 }
