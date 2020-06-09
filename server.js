@@ -21,6 +21,7 @@ const Score = mongoose.model('Score', ScoreSchema);
 let users={};
 let players={};
 var timerTrigger=false;
+var previousTagger;
 io.on('connection', function (socket) { 
     displayScore();
     socket.on('got_new_user', function(data){
@@ -70,6 +71,7 @@ io.on('connection', function (socket) {
         if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
                 startTimer();
+                previousTagger=players[data.socketId];
             }
         }
         var player = players[socket.id] || {};
@@ -149,8 +151,10 @@ io.on('connection', function (socket) {
         }
         let count=Object.keys(players).length;
         let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
+        newTagger == previousTagger ? pickTagger() : newTagger;
         newTagger.tagger=true;
         socket.emit('reset',newTagger);
+        newTagger = previousTagger;
     }
 });
 
