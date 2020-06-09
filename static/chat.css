@@ -1,3 +1,7 @@
+*{
+    background-color: rgb(195, 194, 201);
+}
+
 .blinking{
     animation:blinkingText 1.2s infinite;
 }
@@ -9,9 +13,6 @@
     100%{   color: red;    }
 }
 
-*{
-    background-color: rgb(195, 194, 201);
-}
 
 body{
     background-color: transparent;
@@ -66,4 +67,8 @@ p{
 
 .centerAll{
     justify-content: center;
+}
+
+#timer{
+    width:75px;
 }

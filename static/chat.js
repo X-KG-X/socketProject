@@ -116,13 +116,13 @@ $(document).ready(function (){
     })
     function startTimer(){
         seconds++;
-        $('#timer').text(seconds);
+        $('#timer').val(seconds);
     }
     var numPlayers;
     function stopTimer(){
         let score=seconds;
         seconds=0;
-        $('#timer').text(seconds);
+        $('#timer').val(seconds);
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
