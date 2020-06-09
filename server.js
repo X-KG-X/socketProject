@@ -163,10 +163,14 @@ createStream.end();
         for(let value of Object.values(players)){
             value.tagger=false;
         }
+        let previousTagger = null;
         let count=Object.keys(players).length;
         let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
+
+        newTagger == previousTagger ? newTagger : console.log('Something broke!');
         newTagger.tagger=true;
         socket.emit('reset',newTagger);
+        newTagger = previousTagger;
     }
 });
 
