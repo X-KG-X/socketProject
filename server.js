@@ -2,9 +2,6 @@
 const express = require('express');
 const app = express();
 
-// node fs module to start creating/writing to files.
-let fs = require("fs");
-
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/static"));
 
@@ -27,10 +24,10 @@ let users={};
 let players={};
 var timerTrigger=false;
 io.on('connection', function (socket) { 
-    let createStream = fs.createWriteStream("highScores.txt");
-createStream.end();
 
     displayScore();
+
+    //Get new user and assign them to a random location on the screen with a random color.
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
@@ -54,6 +51,8 @@ createStream.end();
             .then(data=>{socket.emit('display',data)})
             .catch(err=>console.log(err))
     }
+
+    //Start and stop Timer functions
     function startTimer(){
         socket.emit('startTime',true)
         timerTrigger=true;
@@ -63,6 +62,7 @@ createStream.end();
         timerTrigger=false;
     }
 
+    //On disconnect of the tagger, a new tagger is then chosen at random
    socket.on('disconnect', function(){
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
@@ -70,16 +70,20 @@ createStream.end();
        pickTagger()
    })
 
+   //emit new message to the chat board
    socket.on('new_msg', function(data){
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
+   //Once the tagger starts moving on the screen, then the timer starts
    socket.on('movement', function(data) {
         if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
                 startTimer();
             }
         }
+
+        //Keeps all the players in bounds the width and height of the board
         let player = players[socket.id] || {};
         if (!collision(player, socket.id, players)) {
             if(data.movement.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
@@ -94,8 +98,9 @@ createStream.end();
             if(data.movement.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
             socket.emit('audio',true)
             }
- 
+
         // Collision Detection
+        //Upon collision you and the other player will bounce off of one another as well as you changing their color to your color.
         function collision(player,socketId,players){
             if(Object.keys(players).length>1){
                 for(let [key,value] of Object.entries(players)){
@@ -110,7 +115,7 @@ createStream.end();
                 }
             }
         }
-
+        //When the game is over everyones color gets reset and a new tagger is assigned
         function gameOver(){
             let result=false;
             let valueArr=Object.values(players);
@@ -129,11 +134,8 @@ createStream.end();
             return result;
         }
 
+        //When the game is over everyones color gets reset and a new tagger is assigned
         if(gameOver()){
-
-
-            writeData();
-            fs.readFile('highScores.txt', 'utf8', readData);
 
             socket.emit('game_over',{isGameOver:true})
 
@@ -158,7 +160,8 @@ createStream.end();
         .then(newScore=>console.log('score created: ', newScore))
         .catch(err=>console.log(err));
     })
-    
+
+    // Tagger is picked and doesnt allow the same tagger twice in a row.
     function pickTagger(){
         for(let value of Object.values(players)){
             value.tagger=false;
@@ -174,31 +177,7 @@ createStream.end();
     }
 });
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//TODO This is the file creating/writing for the High scores. Having the file written on connection of the game seems fine.
-
-//on connection
-let createStream = fs.createWriteStream("highScores.txt");
-createStream.end();
-
-// on game over
-function writeData(){
-    let writeStream = fs.createWriteStream("highScores.txt");
-    writeStream.write("HIGH SCORES!");
-    writeStream.write(`User: Rick     Score: 5 seconds`);
-    writeStream.write(`User: Morty     Score: 12 seconds`);
-    writeStream.write(`User: Summer     Score: 20 seconds`);
-    writeStream.end();
-}
-
-// on button click : on game over as well but dispay to bottom of screen
-function readData(err, data) {
-    console.log(data);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//Sets the random color for the players
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';

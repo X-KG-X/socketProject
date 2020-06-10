@@ -93,7 +93,7 @@ $(document).ready(function () {
     let maxWidth = canvas.width = 500;
     let maxHeight = canvas.height = 500;
 
-
+    //Coloring player and assigning someone to a tagger
     socket.on('state', function (data) {
         let tagger;
         let context = canvas.getContext('2d');
@@ -110,6 +110,8 @@ $(document).ready(function () {
                 tagger = player.name;
             }
         }
+
+        // Red Flashing light when a new game starts
         $("#tagger").text(tagger);
         socket.on('reset', function (data) {
             $("#resetFlash").text(data.name + " IS THE TAGGER NOW");
@@ -117,7 +119,7 @@ $(document).ready(function () {
         })
     });
 
-
+    //Timer start
     socket.on('startTime', function (data) {
         let interval;
         if (data) {
@@ -137,6 +139,8 @@ $(document).ready(function () {
         seconds++;
         $('#timer').val(seconds);
     }
+
+    //Stop timer and emit score
     var numPlayers;
     function stopTimer(){
         let score=seconds;
@@ -145,6 +149,7 @@ $(document).ready(function () {
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
+    //adds a bouncing sound on contact with another player
     socket.on('audio',function(data){
         if(data){
             let x=document.getElementById("myAudio");
