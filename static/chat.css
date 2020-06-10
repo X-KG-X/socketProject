@@ -73,5 +73,7 @@ p{
 }
 
 #timer{
-    width:75px;
+    width:100px;
+    background-color: aliceblue;
+    border-radius: 25px;
 }
