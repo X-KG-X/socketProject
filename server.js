@@ -43,7 +43,7 @@ io.on('connection', function (socket) {
     })
 
     function displayScore(){
-        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}}])
+        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{minTime:1,_id:1}}])
             .then(data=>{socket.emit('display',data)})
             .catch(err=>console.log(err))
     }
@@ -131,6 +131,7 @@ io.on('connection', function (socket) {
             }
             stopTimer();
             pickTagger();
+            displayScore();
         }
     });
     
@@ -142,7 +143,6 @@ io.on('connection', function (socket) {
         score.save()
         .then(newScore=>console.log('score created: ', newScore))
         .catch(err=>console.log(err));
-        displayScore();
     })
     
     function pickTagger(){
