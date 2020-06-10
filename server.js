@@ -131,7 +131,6 @@ io.on('connection', function (socket) {
             }
             stopTimer();
             pickTagger();
-            displayScore();
         }
     });
     
@@ -143,6 +142,7 @@ io.on('connection', function (socket) {
         score.save()
         .then(newScore=>console.log('score created: ', newScore))
         .catch(err=>console.log(err));
+        displayScore();
     })
     
     function pickTagger(){
@@ -150,11 +150,14 @@ io.on('connection', function (socket) {
             value.tagger=false;
         }
         let count=Object.keys(players).length;
-        let newTagger=Object.values(players)[Math.floor(Math.random()*count)]
-        newTagger == previousTagger ? pickTagger() : newTagger;
-        newTagger.tagger=true;
-        socket.emit('reset',newTagger);
-        newTagger = previousTagger;
+        let newTagger=Object.values(players)[Math.floor(Math.random()*count)];
+        if(newTagger!=previousTagger){
+            newTagger.tagger=true;
+            socket.emit('reset',newTagger);
+        }
+        else{
+            pickTagger()
+        }
     }
 });
 
