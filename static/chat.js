@@ -1,44 +1,55 @@
-$(document).ready(function (){
-    const socket = io(); 
-    let name= prompt("Enter your preferred name!","Dude");
-    socket.emit('got_new_user',{name:name});
-    socket.on('existing_users',function(data){
-        for(let i in data ){
-            $('#sidebar').append('<p id='+i+'>'+data[i]+'</p>')
+//Prompt asks you for your name in the beginning of the game, writing in a default valut of Dude for the name.
+$(document).ready(function () {
+    const socket = io();
+    let name = prompt("Enter your preferred name!", "Dude");
+    socket.emit('got_new_user', { name: name });
+
+    // Creates a new p tag and adds the users name to the html in the chat window.
+    socket.on('existing_users', function (data) {
+        for (let i in data) {
+            $('#sidebar').append('<p id=' + i + '>' + data[i] + '</p>')
         }
     })
-    socket.on('new_user',function(data){
-        $('#sidebar').append('<p id='+data.id+'>'+data.name+'</p>')
+    socket.on('new_user', function (data) {
+        $('#sidebar').append('<p id=' + data.id + '>' + data.name + '</p>')
     })
-    socket.on('disconnected_user',function(data){
-        $('#'+data).remove();
+
+    //Removes user from the game
+    socket.on('disconnected_user', function (data) {
+        $('#' + data).remove();
     })
-    $('#message').keypress(function(event){            
-        if (event.which==13){
-            let new_msg=$('#message').val()
-            socket.emit('new_msg',new_msg)
+
+    //Allows user to submit messages via the Enter key (13).
+    $('#message').keypress(function (event) {
+        if (event.which == 13) {
+            let new_msg = $('#message').val()
+            socket.emit('new_msg', new_msg)
             $('#message').val('')
             return false
-        }   
+        }
     })
-    $('#send').click(function(){
-        let new_msg=$('#message').val()
-        socket.emit('new_msg',new_msg)
+
+    // User can send messages via the Send Query button
+    $('#send').click(function () {
+        let new_msg = $('#message').val()
+        socket.emit('new_msg', new_msg)
         $('#message').val('')
     })
-    socket.on('new_message',function(data){
-        $('#chat_box').append('<p>'+data.name+':  '+data.msg+'</p>')
-        $('#chat_box').stop().animate({scrollTop: $('#chat_box')[0].scrollHeight},1000);
+    socket.on('new_message', function (data) {
+        $('#chat_box').append('<p>' + data.name + ':  ' + data.msg + '</p>')
+        $('#chat_box').stop().animate({ scrollTop: $('#chat_box')[0].scrollHeight }, 1000);
     })
 
     //Canvas
-    var movement = {
+    let movement = {
         up: false,
         down: false,
         left: false,
         right: false
     }
-    document.addEventListener('keydown', function(event) {
+
+    // When key is held down then user character should move in that direction
+    document.addEventListener('keydown', function (event) {
         switch (event.keyCode) {
             case 37: // LEFT
             movement.left = true;
@@ -54,7 +65,9 @@ $(document).ready(function (){
             break;
         }
     });
-    document.addEventListener('keyup', function(event) {
+
+    // When the key is released then the user should stop moving in that direction
+    document.addEventListener('keyup', function (event) {
         switch (event.keyCode) {
             case 37: // LEFT
             movement.left = false;
@@ -70,54 +83,66 @@ $(document).ready(function (){
             break;
         }
     });
-  
-    setInterval(function() {
-        socket.emit('movement', {movement:movement, socketId:socket.id});
-        }, 1000/60);
-    
-    var canvas = document.getElementById('myCanvas');
+
+
+    //Set the movement intervals
+    setInterval(function () {
+        socket.emit('movement', { movement: movement, socketId: socket.id });
+    }, 1000 / 60);
+
+    let canvas = document.getElementById('myCanvas');
     let maxWidth = canvas.width = 500;
     let maxHeight = canvas.height = 500;
-    var context = canvas.getContext('2d');
-    var tagger;
-    socket.on('state', function(data) {
-        numPlayers=Object.keys(data).length;
+    let tagger;
+    let context = canvas.getContext('2d');
+
+    //Coloring player and assigning someone to a tagger
+    socket.on('state', function (data) {
         context.clearRect(0, 0, maxWidth, maxHeight);
-        for (var id in data) {
-            var player = data[id];
-            context.fillStyle =player.color ;
+        for (let id in data) {
+            let player = data[id];
+            context.fillStyle = player.color;
+
             context.beginPath();
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
             context.fill();
             context.stroke();
-            context.strokeText(player.name,player.x,player.y+20)
-            if(player.tagger){
-                tagger=player.name;
+            context.strokeText(player.name, player.x, player.y + 20)
+            if (player.tagger) {
+                tagger = player.name;
             }
         }
+
+        // Red Flashing light when a new game starts
         $("#tagger").text(tagger);
-        socket.on('reset', function(data){
+        socket.on('reset', function (data) {
             $("#resetFlash").text(data.name + " IS THE TAGGER NOW");
-            setTimeout(function(){$("#resetFlash").text('');},3600);
+            setTimeout(function () { $("#resetFlash").text(''); }, 3600);
         })
     });
-    
-    var seconds=0;
-    var interval;
-    socket.on('startTime',function(data){
-        if(data){
+
+    //Timer start
+    let interval;
+    let seconds = 0;
+
+    socket.on('startTime', function (data) {
+        if (data) {
             clearInterval(interval);
-            interval=setInterval(startTimer,100);
+            interval = setInterval(startTimer, 100);
         }
-        else{
+        else {
             clearInterval(interval);
             stopTimer();
         }
     })
-    function startTimer(){
+
+
+    function startTimer() {
         seconds++;
         $('#timer').val(seconds);
     }
+
+    //Stop timer and emit score
     var numPlayers;
     function stopTimer(){
         let score=seconds;
@@ -126,6 +151,7 @@ $(document).ready(function (){
         socket.emit('score',{name:tagger, tags:numPlayers, time:score})
     }
 
+    //adds a bouncing sound on contact with another player
     socket.on('audio',function(data){
         if(data){
             let x=document.getElementById("myAudio");
@@ -141,4 +167,5 @@ $(document).ready(function (){
             });
         }
     })
+
  })

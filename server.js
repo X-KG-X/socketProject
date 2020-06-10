@@ -1,5 +1,7 @@
+//Needed to set up the server
 const express = require('express');
 const app = express();
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/static"));
 
@@ -23,7 +25,10 @@ let players={};
 var timerTrigger=false;
 var previousTagger;
 io.on('connection', function (socket) { 
+
     displayScore();
+
+    //Get new user and assign them to a random location on the screen with a random color.
     socket.on('got_new_user', function(data){
         socket.emit('existing_users',users)
         if (data.name){
@@ -47,6 +52,8 @@ io.on('connection', function (socket) {
             .then(data=>{socket.emit('display',data)})
             .catch(err=>console.log(err))
     }
+
+    //Start and stop Timer functions
     function startTimer(){
         socket.emit('startTime',true)
         timerTrigger=true;
@@ -56,6 +63,7 @@ io.on('connection', function (socket) {
         timerTrigger=false;
     }
 
+    //On disconnect of the tagger, a new tagger is then chosen at random
    socket.on('disconnect', function(){
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
@@ -63,10 +71,12 @@ io.on('connection', function (socket) {
        pickTagger()
    })
 
+   //emit new message to the chat board
    socket.on('new_msg', function(data){
         io.emit('new_message', { name: users[socket.id], msg: data})
    })
 
+   //Once the tagger starts moving on the screen, then the timer starts
    socket.on('movement', function(data) {
         if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
@@ -74,7 +84,9 @@ io.on('connection', function (socket) {
                 previousTagger=players[data.socketId];
             }
         }
-        var player = players[socket.id] || {};
+
+        //Keeps all the players in bounds the width and height of the board
+        let player = players[socket.id] || {};
         if (!collision(player, socket.id, players)) {
             if(data.movement.left){player.x > 0 ? player.x -= 5 : player.x = 495;}
             if(data.movement.up){player.y > 0 ? player.y -= 5 : player.y = 495;}
@@ -88,8 +100,9 @@ io.on('connection', function (socket) {
             if(data.movement.down){player.y < 500 ? player.y -= 75 : player.y = 5;}
             socket.emit('audio',true)
             }
- 
+
         // Collision Detection
+        //Upon collision you and the other player will bounce off of one another as well as you changing their color to your color.
         function collision(player,socketId,players){
             if(Object.keys(players).length>1){
                 for(let [key,value] of Object.entries(players)){
@@ -104,7 +117,7 @@ io.on('connection', function (socket) {
                 }
             }
         }
-
+        //When the game is over everyones color gets reset and a new tagger is assigned
         function gameOver(){
             let result=false;
             let valueArr=Object.values(players);
@@ -123,6 +136,7 @@ io.on('connection', function (socket) {
             return result;
         }
 
+        //When the game is over everyones color gets reset and a new tagger is assigned
         if(gameOver()){
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
@@ -144,7 +158,8 @@ io.on('connection', function (socket) {
         .then(newScore=>console.log('score created: ', newScore))
         .catch(err=>console.log(err));
     })
-    
+
+    // Tagger is picked and doesnt allow the same tagger twice in a row.
     function pickTagger(){
         for(let value of Object.values(players)){
             value.tagger=false;
@@ -158,10 +173,11 @@ io.on('connection', function (socket) {
         else{
             pickTagger()
         }
+
     }
 });
 
-
+//Sets the random color for the players
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
