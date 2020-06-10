@@ -41,7 +41,7 @@ $(document).ready(function () {
     })
 
     //Canvas
-    let movement = {
+    var movement = {
         up: false,
         down: false,
         left: false,
@@ -93,11 +93,12 @@ $(document).ready(function () {
     let canvas = document.getElementById('myCanvas');
     let maxWidth = canvas.width = 500;
     let maxHeight = canvas.height = 500;
-    let tagger;
+    var tagger;
     let context = canvas.getContext('2d');
 
     //Coloring player and assigning someone to a tagger
     socket.on('state', function (data) {
+        numPlayers=Object.keys(data).length;
         context.clearRect(0, 0, maxWidth, maxHeight);
         for (let id in data) {
             let player = data[id];
@@ -122,8 +123,8 @@ $(document).ready(function () {
     });
 
     //Timer start
-    let interval;
-    let seconds = 0;
+    var interval;
+    var seconds = 0;
 
     socket.on('startTime', function (data) {
         if (data) {

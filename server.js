@@ -48,7 +48,7 @@ io.on('connection', function (socket) {
     })
 
     function displayScore(){
-        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{minTime:1,_id:1}}])
+        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
             .then(data=>{socket.emit('display',data)})
             .catch(err=>console.log(err))
     }
@@ -78,6 +78,8 @@ io.on('connection', function (socket) {
 
    //Once the tagger starts moving on the screen, then the timer starts
    socket.on('movement', function(data) {
+        displayScore();
+
         if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
                 startTimer();
@@ -145,7 +147,6 @@ io.on('connection', function (socket) {
             }
             stopTimer();
             pickTagger();
-            displayScore();
         }
     });
     
