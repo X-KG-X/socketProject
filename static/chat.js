@@ -76,13 +76,13 @@ $(document).ready(function (){
         }, 1000/60);
     
     var canvas = document.getElementById('myCanvas');
-    canvas.width=500;
-    canvas.height=500;
+    let maxWidth = canvas.width = 500;
+    let maxHeight = canvas.height = 500;
     var context = canvas.getContext('2d');
     var tagger;
     socket.on('state', function(data) {
         numPlayers=Object.keys(data).length;
-        context.clearRect(0, 0, 500, 500);
+        context.clearRect(0, 0, maxWidth, maxHeight);
         for (var id in data) {
             var player = data[id];
             context.fillStyle =player.color ;
