@@ -84,6 +84,7 @@ $(document).ready(function () {
         }
     });
 
+
     //Set the movement intervals
     setInterval(function () {
         socket.emit('movement', { movement: movement, socketId: socket.id });
@@ -101,6 +102,7 @@ $(document).ready(function () {
         for (let id in data) {
             let player = data[id];
             context.fillStyle = player.color;
+
             context.beginPath();
             context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
             context.fill();
