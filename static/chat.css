@@ -13,10 +13,6 @@
     100%{   color: red;    }
 }
 
-*{
-    background-color: lightgray;
-}
-
 body{
     background-color: transparent;
 }
