@@ -138,10 +138,6 @@ io.on('connection', function (socket) {
 
         //When the game is over everyones color gets reset and a new tagger is assigned
         if(gameOver()){
-
-            socket.emit('game_over',{isGameOver:true})
-
-            stopTimer();
             for(let value of Object.values(players)){
                 value.color=getRandomColor();
                 value.x=Math.floor(Math.random() * 300) + 1;
@@ -168,7 +164,6 @@ io.on('connection', function (socket) {
         for(let value of Object.values(players)){
             value.tagger=false;
         }
-        let previousTagger = null;
         let count=Object.keys(players).length;
         let newTagger=Object.values(players)[Math.floor(Math.random()*count)];
         if(newTagger!=previousTagger){
