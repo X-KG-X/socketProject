@@ -22,8 +22,8 @@ const Score = mongoose.model('Score', ScoreSchema);
 
 let users={};
 let players={};
-var timerTrigger=false;
-var previousTagger;
+let timerTrigger=false;
+let previousTagger;
 io.on('connection', function (socket) { 
 
     displayScore();
@@ -180,9 +180,9 @@ io.on('connection', function (socket) {
 
 //Sets the random color for the players
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;

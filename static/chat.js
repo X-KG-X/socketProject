@@ -41,7 +41,7 @@ $(document).ready(function () {
     })
 
     //Canvas
-    var movement = {
+    let movement = {
         up: false,
         down: false,
         left: false,
@@ -93,7 +93,7 @@ $(document).ready(function () {
     let canvas = document.getElementById('myCanvas');
     let maxWidth = canvas.width = 500;
     let maxHeight = canvas.height = 500;
-    var tagger;
+    let tagger;
     let context = canvas.getContext('2d');
 
     //Coloring player and assigning someone to a tagger
@@ -123,8 +123,8 @@ $(document).ready(function () {
     });
 
     //Timer start
-    var interval;
-    var seconds = 0;
+    let interval;
+    let seconds = 0;
 
     socket.on('startTime', function (data) {
         if (data) {
@@ -144,7 +144,7 @@ $(document).ready(function () {
     }
 
     //Stop timer and emit score
-    var numPlayers;
+    let numPlayers;
     function stopTimer(){
         let score=seconds;
         seconds=0;
