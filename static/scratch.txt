@@ -113,3 +113,80 @@
     //         startTimer();
     //     }
     // })
+
+
+
+
+        // socket.on('display',function(data){
+    //     if(data){
+    //         $('#display').text('');
+    //         data.forEach(element => {
+    //             $('#display').append(`<ul>${element.name}: ${element.tags} players tagged in ${element.time} seconds</ul>`);
+    //         });
+    //     }
+    // })
+
+
+
+    // function displayScore(){
+    //     Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
+    //         .then(data=>{
+    //             let result=[];
+    //             for(let one of data){
+    //                 console.log(one._id+"  "+one.minTime)
+    //                 Score.find({$and:[{tags:one._id},{time:one.minTime}]})
+    //                     .then(data=>{result.push(...data)
+    //                         console.log(data.name+"**************")
+    //                         console.log(result+"###########")
+                                Promise.resolve(result)
+    //                     })
+
+    //                     console.log(result+"/////////")
+    //             }
+    //             console.log(result+"---------")s
+    //             socket.emit('display',result)
+    //         })
+    //         .catch(err=>console.log(err))
+    // }
+
+    
+        // function getResult(data){
+    //     return new Promise((resolve, reject) =>{
+    //         let result=[];
+    //         for(let i=0; i< data.length; i++){
+    //             const one = data[i];
+    //             console.log("i value outside then: "+i)
+    //             console.log(one._id+"  "+one.minTime)
+    //             Score.find({$and:[{tags:one._id},{time:one.minTime}]})
+    //                 .then(data=>{result.push(...data)
+    //                     if (i === data.length - 1){
+    //                         console.log("i value: "+i)
+    //                         // done going throught the data
+    //                         resolve(result)
+    //                     }
+    //                 })
+    //         }
+    //     })
+    // }    
+    
+    // function displayScore(){
+    // Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
+    //     .then(data=>{
+    //         getResult(data)
+    //         .then(result => {
+    //             console.log(result+"*****")
+    //             socket.emit('display',result)
+    //         })
+            
+    //     })
+    //     .catch(err=>console.log(err))
+    // }
+
+
+
+
+        // function displayScore(){
+    //     Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
+    //         .then(data=>{socket.emit('display',data)})
+    //         .catch(err=>console.log(err))
+    // }

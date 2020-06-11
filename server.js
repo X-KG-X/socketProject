@@ -47,10 +47,19 @@ io.on('connection', function (socket) {
         }
     })
 
-    function displayScore(){
-        Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
-            .then(data=>{socket.emit('display',data)})
-            .catch(err=>console.log(err))
+    function getMinScores(){
+        let result= Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
+        return result;
+    }
+
+    async function displayScore(){
+        let minScore= await getMinScores();
+        let result=[];
+        for(let one of minScore){
+            let record = await Score.find({$and:[{tags:one._id},{time:one.minTime}]})
+            result.push(...record)
+        }
+        socket.emit('display',result)
     }
 
     //Start and stop Timer functions

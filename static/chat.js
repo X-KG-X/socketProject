@@ -163,9 +163,8 @@ $(document).ready(function () {
         if(data){
             $('#display').text('');
             data.forEach(element => {
-                $('#display').append(`<ul>${element._id} players tagged in ${element.minTime} seconds</ul>`);
+                $('#display').append(`<ul>${element.name} -------->  ${element.tags} players tagged in ${element.time} secs</ul>`);
             });
         }
     })
-
  })
