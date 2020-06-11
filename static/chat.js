@@ -137,7 +137,6 @@ $(document).ready(function () {
         }
     })
 
-
     function startTimer() {
         seconds++;
         $('#timer').val(seconds);

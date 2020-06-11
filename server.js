@@ -67,6 +67,7 @@ io.on('connection', function (socket) {
    socket.on('disconnect', function(){
        io.emit('disconnected_user',socket.id)
        delete users[socket.id]
+       stopTimer()
        delete players[socket.id]
        pickTagger()
    })
@@ -167,12 +168,14 @@ io.on('connection', function (socket) {
         }
         let count=Object.keys(players).length;
         let newTagger=Object.values(players)[Math.floor(Math.random()*count)];
-        if(newTagger!=previousTagger){
+        if(newTagger!==previousTagger){
             newTagger.tagger=true;
             socket.emit('reset',newTagger);
         }
         else{
+            console.log("************")
             pickTagger()
+            // Object.values(players)[count-1].tagger=true;
         }
 
     }
