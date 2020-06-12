@@ -48,19 +48,31 @@ io.on('connection', function (socket) {
     })
 
     function getMinScores(){
-        let result= Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
-        return result;
+        try{
+            let result= Score.aggregate([{$group:{_id:"$tags",minTime:{$min:"$time"}}},{$sort:{_id:1}}])
+            return result;
+        }
+        catch(err){
+            console.log(err)
+        }
     }
 
     async function displayScore(){
-        let minScore= await getMinScores();
-        let result=[];
-        for(let one of minScore){
-            let record = await Score.find({$and:[{tags:one._id},{time:one.minTime}]})
-            result.push(...record)
+        try{
+            let minScore= await getMinScores();
+            let result=[];
+            for(let one of minScore){
+                let record = await Score.find({$and:[{tags:one._id},{time:one.minTime}]})
+                result.push(...record)
+            }
+            socket.emit('display',result)
         }
-        socket.emit('display',result)
+        catch(err){
+            console.log(err)
+        }
     }
+
+    const displayInterval=setInterval(()=>displayScore(), 1000)
 
     //Start and stop Timer functions
     function startTimer(){
@@ -73,22 +85,22 @@ io.on('connection', function (socket) {
     }
 
     //On disconnect of the tagger, a new tagger is then chosen at random
-   socket.on('disconnect', function(){
-       io.emit('disconnected_user',socket.id)
-       delete users[socket.id]
-       stopTimer()
-       delete players[socket.id]
-       pickTagger()
-   })
+socket.on('disconnect', function(){
+    io.emit('disconnected_user',socket.id)
+    delete users[socket.id]
+    stopTimer()
+    delete players[socket.id]
+    pickTagger()
+})
 
    //emit new message to the chat board
-   socket.on('new_msg', function(data){
-        io.emit('new_message', { name: users[socket.id], msg: data})
-   })
+socket.on('new_msg', function(data){
+    io.emit('new_message', { name: users[socket.id], msg: data})
+})
 
    //Once the tagger starts moving on the screen, then the timer starts
-   socket.on('movement', function(data) {
-        displayScore();
+socket.on('movement', function(data) {
+        // displayScore();
 
         if(!timerTrigger&&players[data.socketId]){
             if(players[data.socketId].tagger&&(data.movement.up||data.movement.down||data.movement.left||data.movement.right)){
@@ -183,10 +195,9 @@ io.on('connection', function (socket) {
         }
         else{
             console.log("************")
-            pickTagger()
-            // Object.values(players)[count-1].tagger=true;
+            // pickTagger()
+            Object.values(players)[count-1].tagger=true;
         }
-
     }
 });
 
@@ -198,13 +209,13 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
 
-setInterval(function() {
+const gameEngine=setInterval(function() {
         io.sockets.emit('state', players);
         }, 1000/60);
 
 // Routing
 app.get('/', function(request, response) {
     response.sendFile(path.join(__dirname, 'index.html'));
-  })
+})
